@@ -127,7 +127,7 @@ public class StreamTokenizer {
 	 * @param c
 	 * @return
 	 */
-	private State gotoNextState(State aState, char c)
+	protected State gotoNextState(State aState, char c)
 	{
 		State result;
 		switch (aState) {
