@@ -29,7 +29,7 @@ public class StreamTokenizer {
 		{
 			this.streamReader = streamReader;
 			chars = new char[100];
-			state = State.WHITE;
+			state = State.DELIMITER;
 		}
 		
 		@Override
@@ -39,7 +39,7 @@ public class StreamTokenizer {
 			try {
 				if(idx<len)
 				{
-					isFound = checkBuf(nextTokBuilder);
+					isFound = readBuffer(nextTokBuilder);
 				}
 				
 				if(! isFound)
@@ -47,14 +47,15 @@ public class StreamTokenizer {
 					idx = 0;
 					while( (len = streamReader.read(chars)) !=-1)
 					{
-						isFound = checkBuf(nextTokBuilder);
+						isFound = readBuffer(nextTokBuilder);
 						if(isFound) {break;}
 					}
 				}
 				
-				if(len == -1 && state == State.TOKEN)
+				
+				if(len == -1 && state == State.APPENDING)
 				{
-					state = State.WHITE;
+					state = gotoNextStateOnEof(state);
 					isFound = true;
 				}
 				
@@ -81,13 +82,13 @@ public class StreamTokenizer {
 			
 		}
 		
-		private boolean checkBuf(final StringBuilder nextTokBuilder){
+		private boolean readBuffer(final StringBuilder nextTokBuilder){
 			boolean isFound = false;
 			int i = idx;
 			for(; i < len; i++)
 			{
-				state = state.nextStage(chars[i]);
-				if(state == State.TOKEN)
+				state = gotoNextState(state, chars[i]);
+				if(state == State.APPENDING)
 				{
 					nextTokBuilder.append(chars[i]);
 				}
@@ -104,49 +105,52 @@ public class StreamTokenizer {
 		
 	}
 	
-	private enum State 
+	protected enum State
 	{
-		WHITE {
-			@Override
-			public State nextStage(char c) {
-				if(isWhiteSpace(c))
-				{
-					return WHITE;
-				}
-				return TOKEN; 
-			}
-		},
-		TOKEN {
-			@Override
-			public State nextStage(char c) {
-				if( isWhiteSpace(c))
-				{
-					return READY;
-				}
-				return TOKEN; 
-			}
-		},
-		
-		READY {
-
-			@Override
-			public State nextStage(char c) {
-				if(isWhiteSpace(c))
-				{
-					return WHITE;
-				}
-				return TOKEN;
-			}
-			
-		
-		};
-		
-		public abstract State nextStage(char c);
-		
-		private static boolean isWhiteSpace(char c)
-		{
-			return c == ' ' || c == '.' || c == '\n';	
+		DELIMITER,
+		APPENDING,
+		READY;
+	}
+	
+	/**
+	 * Can be overwritten
+	 * @param c
+	 * @return
+	 */
+	protected boolean isWhiteSpace(char c)
+	{
+		return c == ' ' || c == '.' || c == '\n';	
+	}
+	
+	/**
+	 * @param aState
+	 * @param c
+	 * @return
+	 */
+	private State gotoNextState(State aState, char c)
+	{
+		State result;
+		switch (aState) {
+		case DELIMITER: 
+			result = isWhiteSpace(c) ? State.DELIMITER  : State.APPENDING;
+			break;
+		case APPENDING:
+			result = isWhiteSpace(c) ? State.READY 		: State.APPENDING;
+			break;
+		case READY:
+			result = isWhiteSpace(c) ? State.DELIMITER  : State.APPENDING;
+			break;
+		default:
+			throw new IllegalStateException();
 		}
+		return result;
 		
 	}
+	
+	protected State gotoNextStateOnEof(State aState)
+	{
+		return State.DELIMITER;
+	}
+	
+	
 }
