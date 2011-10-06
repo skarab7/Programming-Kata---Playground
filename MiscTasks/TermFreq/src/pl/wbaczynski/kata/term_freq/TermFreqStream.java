@@ -1,10 +1,11 @@
 package pl.wbaczynski.kata.term_freq;
 
-import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.Scanner;
 
 import pl.wbaczynski.kata.tokenizer.StreamTokenizer;
 
@@ -12,22 +13,47 @@ import pl.wbaczynski.kata.tokenizer.StreamTokenizer;
 public class TermFreqStream implements ITermFreq {
 	
 	
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) 
 	{
+		InputStreamReader isr = null;
+		String term;
 		if(args.length == 0) {
-			System.err.println("java TermFreqStream <term> [text]");
+			System.err.println("java TermFreqStream <term> [text] or java TermFreqStream <term> <text file name>");
 			return;
 		}
-		
-		final InputStreamReader isr = new InputStreamReader( new ByteArrayInputStream(new Scanner(System.in).useDelimiter("\\A").next().getBytes("UTF8")) );
-		
-		
+		else if(args.length == 1)
+		{
+			term = args[0];
+			isr = new InputStreamReader(System.in );
+		}
+		else 
+		{
+			term = args[0];
+
+			//if(! new File(args[1]).isFile())
+			
+			try {
+				isr =  new InputStreamReader(new FileInputStream(args[1]));
+			} catch (FileNotFoundException e) {
+				System.err.println("Text file not found");
+				return;
+			}
+		}
 		final TermFreqStream termFreq = new TermFreqStream();
-		termFreq.setTerm(args[0]);
-		termFreq.process(isr);
+		try {	
+			termFreq.setTerm( term );
+			termFreq.process( isr );
 		
-		System.out.printf("Freq of term: %s is %d\n", args[0], termFreq.getFreq() );
-		System.out.printf("Percentage: %.2f\n", termFreq.getPercentage());
+			System.out.printf("Freq of term: %s is %d\n", args[0], termFreq.getFreq() );
+			System.out.printf("Percentage: %.2f\n", termFreq.getPercentage());
+		} catch (IOException e) {
+			// TODO add logging ERROR
+			e.printStackTrace();
+			System.err.println("Internal error.");
+		} finally 
+		{
+			termFreq.closeAttempt(isr);
+		}
 	}
 
 	
@@ -70,6 +96,19 @@ public class TermFreqStream implements ITermFreq {
 		return ((double) freq /  (double) numAllTokens) * 100 ;
 	}
 	
+	protected void closeAttempt(Closeable aCloseable)
+	{
+		if(aCloseable != null)
+		{
+			try 
+			{	
+				aCloseable.close();
+			} catch (Exception e) {
+				// TODO add logging
+				e.printStackTrace();
+			}
+		}
+	}
 		
 
 }
