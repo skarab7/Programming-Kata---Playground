@@ -44,9 +44,9 @@ public class StreamTokenizer {
 				
 				if(! isFound)
 				{
-					idx = 0;
 					while( (len = streamReader.read(chars)) !=-1)
 					{
+						idx = 0;
 						isFound = readBuffer(nextTokBuilder);
 						if(isFound) {break;}
 					}
