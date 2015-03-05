@@ -5,17 +5,25 @@ import org.junit.Test;
 public class TestSolution {
 
     @Test
-    public void testSmallExample() {
+    public void testWhenSmallExample() {
         Assert.assertTrue(false);   
     }
     
     @Test
-    public void testBigInput() {
-        Assert.assertTrue(false);  
+    public void testWhenOneELement() {
     }
     
     @Test
-    public void testCornerCase1() {
+    public void testWhenTwoELements() {
+    }
+    
+    @Test(timeout=400)
+    public void testWhenBigInput() {
+        Assert.assertTrue(false);  
+    }
+    
+    @Test(timeout=400)
+    public void testWhenCornerCase1() {
         Assert.assertTrue(false);  
     }
 
