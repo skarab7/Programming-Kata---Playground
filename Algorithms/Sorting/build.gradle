@@ -1,7 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'pmd'
-apply plugin: 'findbugs'
-
+apply plugin: 'eclipse'
 
 sourceSets {
 	main {
