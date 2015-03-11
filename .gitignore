@@ -1,2 +1,7 @@
 **/build/
 **/.gradle/
+**/.project
+**/.settings/
+**/*.swp
+**/bin/
+**/*.class
