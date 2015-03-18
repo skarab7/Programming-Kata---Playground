@@ -1,9 +1,7 @@
-import java.lang.Comparable;
-import java.lang.StringBuilder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 class BST<Key extends Comparable<Key>, Value> {

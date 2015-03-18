@@ -1,13 +1,9 @@
-import java.lang.Comparable;
-import java.lang.StringBuilder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 
 // Based on (all credits go to)
 // http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html
+// It is an excercise
 class RedBlackTree<Key extends Comparable<Key>, Value> {
 
     private static final boolean BLACK=false;
@@ -126,6 +122,169 @@ class RedBlackTree<Key extends Comparable<Key>, Value> {
         // 1 compareTo 2 -> -1
         // 3 comapareTo 3 -> 1
         return n.key.compareTo(key);
+    }
+
+
+    public void delete(Key key)
+    {
+         if(!contains(key)) {
+             throw new NoSuchElementException(); 
+         }
+
+         if(isBlack(root.left) && isBlack(root.right)) {
+             root.color = RED;
+         } 
+         root = delete(root, key);
+         if(! isEmpty()) root.color = BLACK;
+    }
+
+    public boolean contains(Key key) {
+        if(root == null) return false;
+        Node x = root;
+        while(x != null) {
+            
+            int cmp = compareKey(x, key);
+            if(cmp == 0) {
+                 return true;
+            } else if(cmp > 0) {
+                 x = x.left;
+            } else {
+                 x = x.right;
+            }
+        }
+        return false;
+    }
+
+
+    // I know that an element with the key exists
+    private Node delete(Node n, Key key) 
+    {
+        int cmp = compareKey(n, key);
+        if(cmp > 0) {
+            if( isBlack(n.left) && isBlack(n.left.left)) {
+                n = moveRedLeft(n);
+            }
+            n.left = delete(n.left, key);
+        } else {
+            if(isRed(n.left)) {
+                 n = rotateRight(n);
+            }
+            if(compareKey(n, key) == 0 && (n.right == null)) {
+                 return null;
+            }
+          
+            if(isBlack(n.right) && isBlack(n.right.left)) {
+                 n = moveRedRight(n);
+            }
+            if(compareKey(n, key) == 0) {
+                 Node x = min(n.right);
+                 n.key = x.key;
+                 n.val = x.val;
+                 n.right = deleteMin(n.right);
+
+            }
+            else {
+                 n.right = delete(n.right, key);
+            }
+        } 
+        return balance(n);
+    }
+
+    // Assuming that h is red and both h.left and h.left.left
+    // are black, make h.left or one of its children red.
+    private Node moveRedLeft(Node h) {
+        // assert (h != null);
+        // assert isRed(h) && !isRed(h.left) && !isRed(h.left.left);
+
+        flipColors(h);
+        if (isRed(h.right.left)) { 
+            h.right = rotateRight(h.right);
+            h = rotateLeft(h);
+            flipColors(h);
+        }
+        return h;
+    }
+
+    // Assuming that h is red and both h.right and h.right.left
+    // are black, make h.right or one of its children red.
+    private Node moveRedRight(Node h) {
+        // assert (h != null);
+        // assert isRed(h) && !isRed(h.right) && !isRed(h.right.left);
+        flipColors(h);
+        if (isRed(h.left.left)) { 
+            h = rotateRight(h);
+            flipColors(h);
+        }
+        return h;
+    }
+
+    // delete the key-value pair with the minimum key
+    public void deleteMin() {
+        if (isEmpty()) throw new NoSuchElementException("BST underflow");
+
+        // if both children of root are black, set root to red
+        if (!isRed(root.left) && !isRed(root.right))
+            root.color = RED;
+
+        root = deleteMin(root);
+        if (!isEmpty()) root.color = BLACK;
+        // assert check();
+    }
+
+    // delete the key-value pair with the minimum key rooted at h
+    private Node deleteMin(Node h) { 
+        if (h.left == null)
+            return null;
+
+        if (!isRed(h.left) && !isRed(h.left.left))
+            h = moveRedLeft(h);
+
+        h.left = deleteMin(h.left);
+        return balance(h);
+    }
+
+    // is this symbol table empty?
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+   // the smallest key; null if no such key
+    public Key min() {
+        if (isEmpty()) return null;
+        return min(root).key;
+    } 
+
+    // the smallest key in subtree rooted at x; null if no such key
+    private Node min(Node x) { 
+        // assert x != null;
+        if (x.left == null) return x; 
+        else                return min(x.left); 
+    } 
+
+    // the largest key; null if no such key
+    public Key max() {
+        if (isEmpty()) return null;
+        return max(root).key;
+    } 
+
+    // the largest key in the subtree rooted at x; null if no such key
+    private Node max(Node x) { 
+        // assert x != null;
+        if (x.right == null) return x; 
+        else                 return max(x.right); 
+    } 
+
+
+    // restore red-black tree invariant
+    private Node balance(Node h) {
+        // assert (h != null);
+
+        if (isRed(h.right))                      h = rotateLeft(h);
+        if (isRed(h.left) && isRed(h.left.left)) h = rotateRight(h);
+        if (isRed(h.left) && isRed(h.right))     flipColors(h);
+
+        h.N = size(h.left) + size(h.right) + 1;
+        return h;
     }
 
     public boolean isBST() {

@@ -2,7 +2,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class RedBlackTreeTest extends RedBlackTree {
+public class RedBlackTreeTest {
 
 
    @Test(timeout=200)
@@ -37,6 +37,35 @@ public class RedBlackTreeTest extends RedBlackTree {
           bst.put(k, "w" + k);
        }
        assertValidRedBlackTree(bst);
+   }
+
+   /*
+    * Given: a 8 element tree
+    */
+   @Test(timeout=330)
+   public void test_whenDeleteElement_thenValidRedBlackTree() 
+   {
+       RedBlackTree<Integer, String> bst = new RedBlackTree<>();
+       int[] input = new int[] {13,8,17,1,11,15,25,6,22,27};
+
+       for(int k: input) {
+          bst.put(k, "w" + k);
+       }
+
+       for(int k : input) {
+           Assert.assertNotNull(bst.get(k));
+       }
+      
+       int[] elementsToDelete = new int[] {13, 6, 27};
+
+       for(int k: elementsToDelete) {
+           bst.delete(k);
+           assertValidRedBlackTree(bst);
+       }
+
+       for(int k : elementsToDelete) {
+           Assert.assertNull("There must not be a node with k " + k, bst.get(k));
+       }
    }
 
    private void assertValidRedBlackTree(RedBlackTree bst) {
