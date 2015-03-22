@@ -6,7 +6,7 @@ USER_TEST_DIR=test
 CPPFLAGS+=-isystem $(GTEST_DIR)/include
 
 # Flags passsed to the C++ compiler
-CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += -g -Wall -Wextra
 
 # All thest produced by this Makefile
 TESTS=solution_unittest
@@ -55,17 +55,12 @@ solution_unittest.o: $(USER_TEST_DIR)/solution_unittest.cpp $(USER_DIR)/solution
 solution_unittest : solution.o solution_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-#solution.o: src/solution.cpp
-#	g++ $(CPPFLAGS) -o build/solution.o -c src/solution.cpp
 
+# 
+# Get googletest 
+#
 setup_google_test:
 	mkdir -p tools ;
 	if [ ! -d $(GTEST_DIR) ]; then \
 		svn checkout http://googletest.googlecode.com/svn/trunk/ $(GTEST_DIR); \
 	fi;
-
-#solution_unittest.o : $(SRC_DIR)/solution_unittest.cpp \
-#                     $(SRC_DIR)/sample1.h $(GTEST_HEADERS)
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1_unittest.cc
-#solution_unittest : solution.o solution_unittest.o gtest_main.a
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
