@@ -1,8 +1,8 @@
-=========================================
+==========================================
 Project Template C++ for Code Challenges
 ==========================================
 
-A project template for code challenges in C++. It depends on googletest.
+A quick (TDD) project template to write solutions for coding challenges in C++
 
 
 How to setup
@@ -10,15 +10,20 @@ How to setup
 
 1. Get the googletest framework:
 
-.. code::bash
+  ::
  
-  setup_google_test
+    make setup_google_test
   
-2. Develop in solution.java and write a test in *test/solution_unittest*
+  This command will checkout googletest in *tools/googletest*
+  
+2. Do TDD development in *solution.cpp* and *test/solution_unittest*
 
-3. Run:
+3. To test your code run:
 
 .. code::bash
 
   make solution_unittest && ./solution_unittest
- 
+
+
+You also have a **make infinititest** command. 
+

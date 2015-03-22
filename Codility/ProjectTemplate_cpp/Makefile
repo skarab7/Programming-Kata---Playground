@@ -55,7 +55,6 @@ solution_unittest.o: $(USER_TEST_DIR)/solution_unittest.cpp $(USER_DIR)/solution
 solution_unittest : solution.o solution_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-
 # 
 # Get googletest 
 #
@@ -64,3 +63,12 @@ setup_google_test:
 	if [ ! -d $(GTEST_DIR) ]; then \
 		svn checkout http://googletest.googlecode.com/svn/trunk/ $(GTEST_DIR); \
 	fi;
+	
+infinititest:
+	while true; do ATIME=`stat -f %Z $(USER_DIR)/solution.cpp $(USER_TEST_DIR)/solution_unittest.cpp` ;  \
+        if [[ "$$ATIME" != "$$LTIME" ]]; then    \
+				make solution_unittest && ./solution_unittest; \
+				LTIME=$$ATIME ; \
+			fi; \
+			sleep 1; \
+	done ;
