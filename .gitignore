@@ -6,3 +6,8 @@
 **/bin/
 **/*.class
 **/.classpath
+# C++
+**/*.o
+**/*.a
+# I generate pdfs to verify rst files.
+**/*.pdf
