@@ -28,7 +28,7 @@
 #include <vector>
 #include <string>
 #include <math.h>
-#include <iostream>
+#include <string>
 #include <stdexcept>
 
 class PriorityQueue {
