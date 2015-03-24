@@ -1,4 +1,5 @@
 GTEST_DIR=tools/googletest
+GLINTER_DIR=tools/googlerlinter
 USER_DIR = src
 USER_TEST_DIR=test
 
@@ -72,3 +73,12 @@ infinititest:
 			fi; \
 			sleep 1; \
 	done ;
+
+#
+# Grab CPP linter
+#
+setup_google_linter:
+	mkdir -p $(GLINTER_DIR); \
+    if [ ! -d $(GLINTER_DIR)/cpplint.py  ]; then \
+          cd $(GLINTER_DIR) && wget http://google-styleguide.googlecode.com/svn/trunk/cpplint/cpplint.py ; \
+    fi;
