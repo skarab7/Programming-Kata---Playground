@@ -75,10 +75,18 @@ infinititest:
 	done ;
 
 #
+#
+#
+run_googler_linter:
+	python $(GLINTER_DIR)/cpplint.py src/* test/*
+
+#
 # Grab CPP linter
 #
 setup_google_linter:
-	mkdir -p $(GLINTER_DIR); \
-    if [ ! -d $(GLINTER_DIR)/cpplint.py  ]; then \
+	if [ ! -d $(GLINTER_DIR)/cpplint.py  ]; then \
+          mkdir -p $(GLINTER_DIR); \
           cd $(GLINTER_DIR) && wget http://google-styleguide.googlecode.com/svn/trunk/cpplint/cpplint.py ; \
     fi;
+
+
