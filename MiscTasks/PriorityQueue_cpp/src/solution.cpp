@@ -49,6 +49,7 @@ std::string PriorityQueue::next(void) {
     *m_Queue.begin() = *(m_Queue.end() - 1);
     std::string max = max_node->data;
     m_Queue.erase(m_Queue.end() - 1);
+    delete max_node;
     bubbleDown();
     return max;
 }
