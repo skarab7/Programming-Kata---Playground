@@ -27,13 +27,18 @@
 
 #include <vector>
 #include <string>
+#include <math.h>
+#include <iostream>
+#include <stdexcept>
 
 class PriorityQueue {
 public:
     PriorityQueue();
     void insert(unsigned int priority, const std::string &str);
     std::string next(void);
-	bool has_next(void);
+    void bubbleUp(void);
+    void bubbleDown(void);
+
 private:
 	
     struct PriorityQueueNode {
@@ -43,7 +48,8 @@ private:
     
 	// check the O(?) access an element with index k
     std::vector<PriorityQueueNode*> m_Queue;
-	// keep the pointer to the last element
-    std::vector<PriorityQueueNode*>::iterator it;
+    
+    int findChildNodeWithLargerValue(int ch_offset_1, int ch_offset_2); 
+    int findChildOffset(int parent_offset);
 };
 #endif

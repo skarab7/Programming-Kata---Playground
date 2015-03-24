@@ -2,6 +2,13 @@
 #include "../src/solution.h"
 #include <limits.h>
 
+TEST(Solution, OneString) {
+	PriorityQueue pq = PriorityQueue();
+	std::string x = "xxx";
+	pq.insert(20, x);
+    EXPECT_EQ(x, pq.next());
+}
+
 TEST(Solution, TwoStrings) {
 	PriorityQueue pq = PriorityQueue();
 	std::string x = "xxx";
@@ -33,7 +40,24 @@ TEST(Solution, TwoSamePrioString) {
 }
 
 
-TEST(Solution, NextOnEmptyQueue) {
-	
-	EXPECT_TRUE(1 == 0);
+TEST(Solution,WhenNextOnEmptyThenException ) {
+    PriorityQueue pq = PriorityQueue();
+
+    EXPECT_ANY_THROW({
+        pq.next();
+    });    
 }
+
+TEST(Solution, GivenArrayWhenAllRemoveAndNextOnEmptyThenException) {
+    PriorityQueue pq = PriorityQueue();
+    pq.insert(20,"x");
+    pq.insert(30,"xw");
+    pq.next();
+    pq.next();
+     
+    EXPECT_ANY_THROW({
+        pq.next();
+    });    
+}
+
+
