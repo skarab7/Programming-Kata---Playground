@@ -20,10 +20,24 @@ How to setup
 
 3. To test your code run:
 
-.. code::bash
+  ::
 
-  make solution_unittest && ./solution_unittest
+    make solution_unittest && ./solution_unittest
 
 
 You also have a **make infinititest** command, so you can do TDD with tests running on every change. 
 
+Tools
+-------
+
+To lint your files:
+
+  ::
+    
+    # Download linter
+    # (you need to do it only once)
+    make setup_google_linter
+
+    # run the linter
+    make run_googler_linter
+  
