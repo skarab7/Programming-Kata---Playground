@@ -1,4 +1,5 @@
 GTEST_DIR=tools/googletest
+GLINTER_DIR=tools/googlerlinter
 USER_DIR = src
 USER_TEST_DIR=test
 
@@ -49,11 +50,11 @@ gtest_main.a : gtest-all.o gtest_main.o
 solution.o : $(USER_DIR)/solution.cpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/solution.cpp
 
-solution_unittest.o: $(USER_TEST_DIR)/solution_unittest.cpp $(USER_DIR)/solution.cpp $(GTEST_HEADERS)
+solution_unittest.o: $(USER_TEST_DIR)/solution_unittest.cpp $(USER_DIR)/solution.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_TEST_DIR)/solution_unittest.cpp
 
 solution_unittest : solution.o solution_unittest.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ -v
 
 # 
 # Get googletest 
@@ -72,3 +73,20 @@ infinititest:
 			fi; \
 			sleep 1; \
 	done ;
+
+#
+#
+#
+run_googler_linter:
+	python $(GLINTER_DIR)/cpplint.py src/* test/*
+
+#
+# Grab CPP linter
+#
+setup_google_linter:
+	if [ ! -d $(GLINTER_DIR)/cpplint.py  ]; then \
+          mkdir -p $(GLINTER_DIR); \
+          cd $(GLINTER_DIR) && wget http://google-styleguide.googlecode.com/svn/trunk/cpplint/cpplint.py ; \
+    fi;
+
+

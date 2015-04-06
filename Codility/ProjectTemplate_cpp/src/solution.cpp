@@ -1,11 +1,8 @@
-#include<iostream>
+#include "solution.h"
 
-class Solution {
-    public:
-        int getClusters(int i) {
-            return i + 1;
-        }
-};
+int Solution::solution(std::vector<int> A) {
+            return -1;
+}
 
 
 /* int main() {
